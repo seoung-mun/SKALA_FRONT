@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>myTrip</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <main class="site-main">
+        <h1>🛫 나의 여행 앨범</h1>
+        <audio controls>
+          <!--  이 영상은 뮤팟에서 제공한 음원 소스를 사용했습니다.--->
+          <!-- Today's Trip - Download: mewc.at/songs/9775 -  -->
+          <source src="../media/travel.mp3" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+        <hr />
+        <h2>📸 여행 사진</h2>
+        <div class="trip-photos">
+          <p class="trip-card">
+            <img
+              src="../media/Fujiyoshida.jpg"
+              alt="후지요시다 시내에서 바라본 풍경"
+            />
+            <span class="trip-caption">후지요다시</span>
+          </p>
+          <p class="trip-card">
+            <img src="../media/Tokyo.jpg" alt="도쿄 시내 거리 풍경" />
+            <span class="trip-caption">도쿄 거리</span>
+          </p>
+          <p class="trip-card">
+            <img src="../media/Tokyo_2.jpg" alt="도쿄에서 만개한 벚꽃" />
+            <span class="trip-caption">도쿄 벚꽃</span>
+          </p>
+        </div>
+        <hr />
+        <h2>나의 여행 브이로그</h2>
+        <figure>
+          <video controls>
+            <source src="../media/tokyo_tower.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <figcaption>도쿄 타워 영상</figcaption>
+        </figure>
+      </main>
+    </div>
+  </body>
+</html>
