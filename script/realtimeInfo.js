@@ -8,14 +8,14 @@ const cityInput = document.querySelector("#city-input");
 const searchBtn = document.querySelector("#search-btn");
 const weatherBox = document.querySelector("#weather-box");
 
-// 에러/안내를 빨간 테두리 + 흔들림 애니메이션과 함께 보여준다
+// 에러 메시지는 weatherBox에 표시하고, 입력창(cityInput)은 빨간 테두리 + 흔들림으로 강조
 function showError(message) {
   weatherBox.innerHTML = `<p>${message}</p>`;
-  weatherBox.classList.add("shake");
+  cityInput.classList.add("shake");
 }
-// 애니메이션이 끝나면 클래스를 떼서, 다음 에러 때 다시 재생되게 한다
-weatherBox.addEventListener("animationend", function () {
-  weatherBox.classList.remove("shake");
+// 흔들림이 끝나면 클래스를 떼서 빨간색을 없애고, 다음 에러 때 다시 재생되게 한다
+cityInput.addEventListener("animationend", function () {
+  cityInput.classList.remove("shake");
 });
 
 // 좌표(lat, lon)를 받아 실시간 날씨를 화면에 그리는 공통 함수
@@ -31,7 +31,6 @@ async function showWeather(lat, lon, cityName) {
   weatherBox.innerHTML = `
     <div class="weather-result">
       <h4>🌍 ${cityName} 실시간 날씨</h4>
-      <p>📍 좌표: <strong>${lat}, ${lon}</strong></p>
       <p>🌡️ 현재 기온: <strong>${result.temp}°C</strong></p>
       <p>💧 현재 습도: <strong>${result.humidity}%</strong></p>
     </div>

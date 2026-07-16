@@ -437,7 +437,8 @@ input[type="reset"]:hover {
   }
 }
 
-#weather-box.shake {
+/* 에러 상태: 빨간 테두리 + 흔들림. 애니메이션이 끝나면 JS가 클래스를 떼서 원상복구 */
+.shake {
   border: 2px solid #e03131;
   border-radius: 6px;
   animation: shake 0.4s ease;
