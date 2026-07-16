@@ -50,7 +50,9 @@ h2 {
 a {
   color: var(--gray-700);
   text-decoration: underline;
-  transition: color 0.15s ease, background-color 0.15s ease;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
 }
 
 a:hover {
@@ -104,7 +106,9 @@ hr {
   border: 1px solid var(--gray-300);
   border-radius: 999px;
   text-decoration: none;
-  transition: transform 0.2s ease, background-color 0.2s ease,
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
     color 0.2s ease;
 }
 
@@ -142,7 +146,9 @@ hr {
   background-color: var(--gray-100);
   border: 1px solid var(--gray-300);
   border-radius: 10px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .card:hover {
@@ -154,6 +160,7 @@ hr {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
+  align-items: center;
 }
 
 .trip-card {
@@ -165,7 +172,9 @@ hr {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
   text-align: center;
   overflow: hidden;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .trip-card:hover {
@@ -190,7 +199,6 @@ hr {
   margin-top: 0.5rem;
 }
 
-/* 프로필 용어 정의를 Grid 2열(용어 | 설명)로 배치 */
 .profile-terms {
   display: grid;
   grid-template-columns: max-content 1fr;
@@ -298,7 +306,6 @@ legend {
   font-size: 1.2rem;
 }
 
-/* 폼 한 줄(라벨 + 입력)을 Flexbox로 정렬, 좁은 화면에선 자동 줄바꿈 */
 form p {
   display: flex;
   flex-wrap: wrap;
@@ -329,7 +336,9 @@ button {
   font-size: 1rem;
   border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  transition:
+    background-color 0.2s ease,
+    transform 0.1s ease;
 }
 
 input[type="submit"]:active,
@@ -358,7 +367,6 @@ input[type="reset"]:hover {
   background-color: var(--gray-300);
 }
 
-/* 태블릿 이하: 가로 배치 → 세로 배치, 카드 2열로 완화 */
 @media (max-width: 768px) {
   .content-layout {
     flex-direction: column;
@@ -369,7 +377,6 @@ input[type="reset"]:hover {
   }
 }
 
-/* 소형 화면(375px 아이폰 폭 포함) 대응 */
 @media (max-width: 480px) {
   body {
     padding: 1rem 0.75rem;
@@ -393,7 +400,6 @@ input[type="reset"]:hover {
   }
 }
 
-/* 모션 최소화를 선호하는 사용자 배려: 전환/변형 효과 제거 */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
