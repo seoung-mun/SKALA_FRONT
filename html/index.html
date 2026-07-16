@@ -50,16 +50,27 @@
             <p>현재 위치: 광주광역시 광산구 📍</p>
             <section>
               <h3>🌤️ 실시간 세계 날씨</h3>
-              <form id="city-form">
-                <input
-                  type="text"
-                  id="city-input"
-                  placeholder="도시 이름을 입력하세요"
-                />
-                <button type="submit">날씨 조회</button>
-              </form>
+              <!-- [AI-assisted] Claude로 select 기반 마크업 초안 생성 -->
+              <!-- 변경: 텍스트 input+form(submit) → select(change)+직접입력 하이브리드 -->
+              <select id="city-select">
+                <option value="none">도시를 선택하세요</option>
+                <option value="37.56,126.97">대한민국 서울 🇰🇷</option>
+                <option value="35.67,139.65">일본 도쿄 🇯🇵</option>
+                <option value="48.85,2.35">프랑스 파리 🇫🇷</option>
+                <option value="custom">✏️ 직접 입력</option>
+              </select>
+
+              <!-- 직접 입력 모드에서만 쓰는 입력칸/버튼: 처음엔 hidden으로 숨김 -->
+              <input
+                type="text"
+                id="city-input"
+                placeholder="도시 이름 입력"
+                hidden
+              />
+              <button type="button" id="search-btn" hidden>조회</button>
+
               <div id="weather-box">
-                <p>도시를 선택하면 좌표가 표시됩니다.</p>
+                <p>도시를 선택하면 정보가 표시됩니다.</p>
               </div>
             </section>
           </article>
@@ -90,6 +101,6 @@
     <script src="../script/upDown.js"></script>
     <script src="../script/grade.js"></script>
     <script src="../script/bag.js"></script>
-    <script type="module" src="../script/weather.js"></script>
+    <script type="module" src="../script/realtimeInfo.js"></script>
   </body>
 </html>
