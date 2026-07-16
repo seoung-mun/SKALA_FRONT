@@ -367,6 +367,60 @@ input[type="reset"]:hover {
   background-color: var(--gray-300);
 }
 
+.btn-submit {
+  border: none;
+  background-color: var(--ink);
+  color: #fff;
+}
+
+.btn-submit:hover {
+  background-color: var(--gray-700);
+}
+
+.game-area {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--gray-300);
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+
+.game-area h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+.game-area .btn-submit {
+  width: 100%;
+}
+
+#city-select {
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+.weather-result {
+  margin-top: 10px;
+  padding: 15px;
+  background-color: var(--gray-100);
+  border: 1px solid var(--gray-200);
+  border-radius: 6px;
+}
+
+.weather-result h4 {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-heading);
+  color: var(--ink);
+}
+
+.weather-result p {
+  margin: 0.25rem 0;
+}
+
 @media (max-width: 768px) {
   .content-layout {
     flex-direction: column;

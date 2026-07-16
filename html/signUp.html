@@ -55,7 +55,13 @@
                 placeholder="example"
               />
               @
-              <select name="emailDomain">
+              <input
+                type="text"
+                id="emailDomain"
+                name="emailDomain"
+                placeholder="직접 입력"
+              />
+              <select id="emailDomainSelect">
                 <option value="direct">직접 입력</option>
                 <option value="naver.com">naver.com</option>
                 <option value="gmail.com">gmail.com</option>
@@ -136,5 +142,6 @@
         </form>
       </main>
     </div>
+    <script src="../script/signUp.js"></script>
   </body>
 </html>
