@@ -1,14 +1,35 @@
+/* [AI-assisted] Claude로 "대기권(Atmosphere)" 디자인 방향 초안을 만든 뒤 실제 사이트에 이식
+   변경 사항: 무채색 회색 팔레트 → 청회색 캔버스 + 흰 카드 부양(그림자 3단계) + 파랑 주색/주황 포인트,
+   히어로 그라데이션, 카드/시간표/폼 재스타일. HTML/JS는 수정하지 않고 CSS만 변경. */
+
 :root {
+  /* 글꼴 */
   --font-heading: "Nanum Myeongjo", serif;
   --font-body: "Noto Sans KR", sans-serif;
-  --bg: #f4f4f5;
-  --surface: #ffffff;
-  --ink: #1a1a1a;
-  --gray-700: #3f3f46;
-  --gray-500: #71717a;
-  --gray-300: #d4d4d8;
-  --gray-200: #e4e4e7;
-  --gray-100: #ededed;
+
+  /* 색 (대기권 팔레트) */
+  --bg: #eef1f6; /* 연한 청회색 캔버스 */
+  --surface: #ffffff; /* 카드/패널 */
+  --ink: #1b2430; /* 본문 글자 */
+  --muted: #5a6472; /* 보조 글자 */
+  --primary: #3b6fe0; /* 주색(파랑) */
+  --primary-dark: #3462cf; /* 주색 hover */
+  --primary-soft: rgba(59, 111, 224, 0.1); /* 주색 옅은 배경(점심 셀 등) */
+  --accent: #f4a259; /* 포인트(주황) — 아주 소량만 */
+  --accent-soft: rgba(244, 162, 89, 0.22);
+  --border: #dde3ec; /* 테두리 */
+  --fill-soft: #f3f6fb; /* 행 머리글 등 옅은 채움 */
+  --fill-empty: #f1f4f9; /* 빈 셀 */
+
+  /* 모양 */
+  --radius: 15px;
+  --lift: cubic-bezier(0.2, 0.7, 0.3, 1);
+
+  /* 그림자 3단계(elevation) — 이 시스템이 B의 시그니처 */
+  --shadow-1: 0 1px 2px rgba(27, 36, 48, 0.05), 0 2px 6px rgba(27, 36, 48, 0.05);
+  --shadow-2: 0 4px 10px rgba(27, 36, 48, 0.07), 0 8px 20px rgba(27, 36, 48, 0.06);
+  --shadow-3: 0 10px 22px rgba(27, 36, 48, 0.09),
+    0 20px 44px rgba(27, 36, 48, 0.1);
 }
 
 *,
@@ -19,12 +40,25 @@
 
 body {
   margin: 0;
-  padding: 2rem 1rem;
+  padding: 2rem 1rem 3rem;
   font-family: var(--font-body);
   font-size: 1.05rem;
-  line-height: 1.75;
+  line-height: 1.7;
   color: var(--ink);
   background-color: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 재사용 키프레임 1개 — 카드/패널/히어로가 살짝 떠오르며 등장 */
+@keyframes floatIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 h1,
@@ -37,51 +71,89 @@ h2 {
 h1 {
   font-size: 2.25rem;
   margin-top: 0;
-  padding: 0.3rem 0.75rem;
-  border-bottom: 3px solid var(--ink);
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid var(--border);
 }
 
 h2 {
-  font-size: 1.6rem;
+  font-size: 1.5rem;
+  color: var(--primary);
   padding-left: 0.75rem;
-  border-left: 6px solid var(--gray-300);
+  border-left: 5px solid var(--primary);
 }
 
 a {
-  color: var(--gray-700);
+  color: var(--primary);
   text-decoration: underline;
+  text-underline-offset: 2px;
   transition:
     color 0.15s ease,
     background-color 0.15s ease;
 }
 
 a:hover {
-  color: var(--ink);
-  background-color: var(--gray-100);
+  color: var(--primary-dark);
 }
 
 blockquote {
   margin: 0.5rem 0;
-  padding: 0.5rem 1rem;
-  border-left: 4px solid var(--gray-300);
-  color: var(--gray-500);
+  padding: 0.85rem 1.1rem;
+  background: var(--fill-soft);
+  border-radius: 10px;
+  border-left: 4px solid var(--accent);
+  color: var(--ink);
+  font-family: var(--font-heading);
 }
 
 hr {
   margin: 2rem 0;
   border: none;
-  border-top: 1px solid var(--gray-300);
+  border-top: 1px solid var(--border);
 }
 
+/* ── 레이아웃 ────────────────────────────── */
+/* 컨테이너는 "가운데 정렬"만 담당하고 캔버스가 비치도록 투명하게 둔다 */
 .container {
-  max-width: 900px;
+  max-width: 960px;
   margin: 0 auto;
-  padding: 1.5rem 2rem;
-  background-color: var(--surface);
-  border: 1px solid var(--gray-300);
-  border-radius: 12px;
 }
 
+/* 카드가 없는 페이지(프로필·시간표·휴일·여행·회원가입…)의 본문을
+   하나의 흰 패널로 감싼다. index의 site-main은 .content-layout 안에 있어
+   .container의 "직계 자식"이 아니므로 여기 해당되지 않는다. */
+.container > .site-main {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.75rem 2rem;
+  box-shadow: var(--shadow-1);
+  animation: floatIn 0.6s var(--lift) both;
+}
+
+/* ── 히어로(메인 상단) ───────────────────── */
+.site-header {
+  background: linear-gradient(160deg, #dce7fa 0%, #eaf0fb 45%, #f7faff 100%);
+  border-radius: 20px;
+  padding: 3rem 2.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-2);
+  animation: floatIn 0.7s var(--lift) both;
+}
+
+.site-header h1 {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0.4rem;
+  font-size: 2.5rem;
+}
+
+.site-header p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 46ch;
+}
+
+/* ── 내비게이션(알약형) ──────────────────── */
 .site-nav {
   margin-bottom: 1.5rem;
 }
@@ -92,7 +164,7 @@ hr {
   padding: 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .site-nav li {
@@ -101,61 +173,105 @@ hr {
 
 .site-nav a {
   display: inline-block;
-  padding: 0.4rem 1rem;
-  background-color: var(--gray-100);
-  border: 1px solid var(--gray-300);
+  padding: 0.55rem 1.1rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-bottom: 3px solid transparent;
   border-radius: 999px;
+  box-shadow: var(--shadow-1);
   text-decoration: none;
+  color: var(--ink);
+  font-weight: 500;
   transition:
-    transform 0.2s ease,
-    background-color 0.2s ease,
+    transform 0.25s var(--lift),
+    box-shadow 0.25s var(--lift),
+    border-color 0.25s ease,
     color 0.2s ease;
 }
 
 .site-nav a:hover {
-  background-color: var(--ink);
-  color: #fff;
   transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+  color: var(--primary);
+}
+
+/* 현재 위치 표시: 주황 밑줄 + 파랑 글자 (포인트색 절제 사용) */
+.site-nav a.is-active,
+.site-nav a[aria-current="page"] {
+  border-bottom-color: var(--accent);
+  color: var(--primary);
+  font-weight: 700;
 }
 
 .content-layout {
   display: flex;
-  gap: 1.5rem;
+  gap: 1.4rem;
   align-items: flex-start;
 }
 
 .content-layout .site-main {
   flex: 2 1 0;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
 }
 
 .content-layout .site-aside {
   flex: 1 1 0;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
 }
 
 .site-footer {
   display: flex;
   justify-content: center;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
+  color: var(--muted);
 }
 
-.card {
-  padding: 1rem 1.25rem;
-  margin-bottom: 1rem;
-  background-color: var(--gray-100);
-  border: 1px solid var(--gray-300);
-  border-radius: 10px;
+/* ── 카드 ────────────────────────────────── */
+/* index 본문 카드(.card)와 사이드바 섹션(.site-aside section)을 함께 카드로 */
+.card,
+.site-aside section {
+  padding: 1.5rem 1.6rem;
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
   transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+    transform 0.3s var(--lift),
+    box-shadow 0.3s var(--lift);
+  animation: floatIn 0.6s var(--lift) both;
 }
 
-.card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+.card:hover,
+.site-aside section:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-3);
 }
 
+.card h2,
+.site-aside section h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+.card h3 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* ── 여행 사진 카드 ──────────────────────── */
 .trip-photos {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -166,27 +282,27 @@ hr {
 .trip-card {
   margin: 0;
   padding: 1rem;
-  background-color: var(--gray-100);
-  border: 1px solid var(--gray-300);
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-1);
   text-align: center;
   overflow: hidden;
   transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+    transform 0.3s var(--lift),
+    box-shadow 0.3s var(--lift);
 }
 
 .trip-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+  box-shadow: var(--shadow-3);
 }
 
 .trip-card img {
   display: block;
   max-width: 100%;
   margin: 0 auto;
-  border-radius: 6px;
+  border-radius: 8px;
   transition: transform 0.3s ease;
 }
 
@@ -196,9 +312,11 @@ hr {
 
 .trip-card .trip-caption {
   display: block;
-  margin-top: 0.5rem;
+  margin-top: 0.6rem;
+  color: var(--muted);
 }
 
+/* ── 프로필 정의 목록 ────────────────────── */
 .profile-terms {
   display: grid;
   grid-template-columns: max-content 1fr;
@@ -208,10 +326,20 @@ hr {
 
 .profile-terms dt {
   font-weight: 700;
+  color: var(--primary);
 }
 
 .profile-terms dd {
   margin: 0;
+}
+
+/* ── 미디어(휴일 강조 표시 포함) ─────────── */
+mark {
+  background: var(--accent-soft);
+  color: var(--ink);
+  padding: 0.05em 0.4em;
+  border-radius: 5px;
+  font-weight: 500;
 }
 
 figure {
@@ -225,12 +353,19 @@ audio {
 
 video {
   display: block;
+  border-radius: 10px;
 }
 
 audio {
   width: 100%;
 }
 
+figcaption {
+  margin-top: 0.5rem;
+  color: var(--muted);
+}
+
+/* ── 표(시간표) ──────────────────────────── */
 .table-scroll {
   margin: 1rem 0;
   overflow-x: auto;
@@ -243,43 +378,59 @@ table {
 }
 
 caption {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
   font-family: var(--font-heading);
-  font-size: 1.4rem;
+  font-size: 1.3rem;
+  text-align: left;
+  color: var(--ink);
 }
 
 th,
 td {
-  padding: 0.6rem 0.8rem;
-  border: 1px solid var(--gray-300);
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--border);
   text-align: center;
+  vertical-align: middle;
 }
 
 thead th {
-  background-color: var(--ink);
+  background-color: var(--primary);
   color: #fff;
 }
 
 tbody th {
-  background-color: var(--gray-200);
+  background-color: var(--fill-soft);
+  color: var(--ink);
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-tbody tr:nth-child(even) {
-  background-color: var(--gray-100);
+/* 빈 시간대: 아주 옅은 채움 / 점심: 주색 옅은 배경 */
+td:empty {
+  background-color: var(--fill-empty);
 }
 
+.lunch {
+  background-color: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* ── 폼 ──────────────────────────────────── */
 input[type="text"],
 input[type="password"],
 input[type="date"],
 input[type="tel"],
 textarea,
 select {
-  padding: 0.5rem 0.75rem;
+  padding: 0.6rem 0.8rem;
   font-family: inherit;
   font-size: 1rem;
-  border: 1px solid var(--gray-300);
-  border-radius: 6px;
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 10px;
   background-color: var(--surface);
+  box-shadow: var(--shadow-1);
 }
 
 textarea {
@@ -289,21 +440,25 @@ textarea {
 input:focus,
 textarea:focus,
 select:focus {
-  outline: 2px solid var(--ink);
-  outline-offset: 1px;
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
 }
 
 fieldset {
   margin-bottom: 1.5rem;
-  padding: 1rem 1.25rem;
-  border: 2px solid var(--gray-300);
-  border-radius: 10px;
+  padding: 1.25rem 1.4rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background-color: var(--surface);
+  box-shadow: var(--shadow-1);
 }
 
 legend {
   padding: 0 0.5rem;
   font-family: var(--font-heading);
   font-size: 1.2rem;
+  color: var(--primary);
 }
 
 form p {
@@ -328,70 +483,59 @@ form p > label[for] {
   margin-bottom: 0.4rem;
 }
 
+/* ── 버튼 ────────────────────────────────── */
 input[type="submit"],
 input[type="reset"],
 button {
-  padding: 0.6rem 1.5rem;
+  padding: 0.65rem 1.5rem;
   font-family: inherit;
   font-size: 1rem;
-  border-radius: 8px;
+  font-weight: 500;
+  border-radius: 10px;
   cursor: pointer;
+  box-shadow: var(--shadow-1);
   transition:
-    background-color 0.2s ease,
-    transform 0.1s ease;
+    transform 0.25s var(--lift),
+    box-shadow 0.25s var(--lift),
+    background-color 0.2s ease;
 }
 
-input[type="submit"]:active,
-input[type="reset"]:active,
-button:active {
-  transform: translateY(1px);
-}
-
-input[type="submit"] {
+input[type="submit"],
+.btn-submit {
   border: none;
-  background-color: var(--ink);
+  background-color: var(--primary);
   color: #fff;
 }
 
-input[type="submit"]:hover {
-  background-color: var(--gray-700);
+input[type="submit"]:hover,
+.btn-submit:hover {
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-3);
 }
 
 input[type="reset"] {
-  border: 1px solid var(--gray-300);
-  background-color: var(--gray-100);
+  border: 1px solid var(--border);
+  background-color: var(--surface);
   color: var(--ink);
 }
 
 input[type="reset"]:hover {
-  background-color: var(--gray-300);
+  background-color: var(--fill-soft);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
 }
 
-.btn-submit {
-  border: none;
-  background-color: var(--ink);
-  color: #fff;
-}
-
-.btn-submit:hover {
-  background-color: var(--gray-700);
-}
-
+/* ── 게임 영역 / 날씨 위젯 ───────────────── */
 .game-area {
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--gray-300);
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  align-items: flex-start;
+  gap: 0.7rem;
+  align-items: stretch;
 }
 
 .game-area h3 {
-  margin: 0;
-  font-family: var(--font-heading);
-  font-size: 1.15rem;
-  color: var(--ink);
+  margin: 0 0 0.2rem;
 }
 
 .game-area .btn-submit {
@@ -404,11 +548,12 @@ input[type="reset"]:hover {
 }
 
 .weather-result {
-  margin-top: 10px;
-  padding: 15px;
-  background-color: var(--gray-100);
-  border: 1px solid var(--gray-200);
-  border-radius: 6px;
+  margin-top: 0.8rem;
+  padding: 1rem 1.2rem;
+  background-color: #f7faff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow-1);
 }
 
 .weather-result h4 {
@@ -418,10 +563,24 @@ input[type="reset"]:hover {
 }
 
 .weather-result p {
-  margin: 0.25rem 0;
+  margin: 0.3rem 0;
+  color: var(--muted);
 }
 
-/* 에러 시 빨간 테두리 + 좌우 흔들림 */
+/* 날씨 수치만 주황 포인트로 강조 (포인트색의 대표적 사용처) */
+.weather-result strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ── 접근성: 키보드 포커스 ──────────────── */
+a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ── 에러 시 빨간 테두리 + 좌우 흔들림 ──── */
 @keyframes shake {
   0%,
   100% {
@@ -437,16 +596,23 @@ input[type="reset"]:hover {
   }
 }
 
-/* 에러 상태: 빨간 테두리 + 흔들림. 애니메이션이 끝나면 JS가 클래스를 떼서 원상복구 */
 .shake {
-  border: 2px solid #e03131;
-  border-radius: 6px;
+  border: 2px solid #e03131 !important;
   animation: shake 0.4s ease;
 }
 
+/* ── 반응형 ──────────────────────────────── */
 @media (max-width: 768px) {
   .content-layout {
     flex-direction: column;
+  }
+
+  .site-header {
+    padding: 2.25rem 1.5rem;
+  }
+
+  .site-header h1 {
+    font-size: 2rem;
   }
 
   .trip-photos {
@@ -456,11 +622,11 @@ input[type="reset"]:hover {
 
 @media (max-width: 480px) {
   body {
-    padding: 1rem 0.75rem;
+    padding: 1rem 0.75rem 2rem;
   }
 
-  .container {
-    padding: 1rem;
+  .container > .site-main {
+    padding: 1.25rem;
   }
 
   h1 {
@@ -477,10 +643,12 @@ input[type="reset"]:hover {
   }
 }
 
+/* ── 모션 최소화 선호 ───────────────────── */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
+    animation: none !important;
     transition-duration: 0.01ms !important;
     transform: none !important;
   }

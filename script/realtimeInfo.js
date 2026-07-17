@@ -75,7 +75,7 @@ searchBtn.addEventListener("click", async function () {
     return;
   }
 
-  weatherBox.innerHTML = "<p>좌표를 찾는 중... ⏳</p>";
+  weatherBox.innerHTML = "<p>로딩 중... ⏳</p>";
 
   // 도시 이름 → 좌표 (geocodingAPI 재활용)
   const coordinates = await getCoordinates(cityName);
